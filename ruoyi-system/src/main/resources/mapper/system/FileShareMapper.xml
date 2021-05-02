@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.FileShareMapper">
+    
+    <resultMap type="FileShare" id="FileShareResult">
+        <result property="fileShareId"    column="file_share_id"    />
+        <result property="fileId"    column="file_id"    />
+        <result property="shareId"    column="share_id"    />
+    </resultMap>
+
+    <sql id="selectFileShareVo">
+        select file_share_id, file_id, share_id from file_share
+    </sql>
+
+    <select id="selectFileShareList" parameterType="FileShare" resultMap="FileShareResult">
+        <include refid="selectFileShareVo"/>
+        <where>  
+            <if test="fileId != null  and fileId != ''"> and file_id = #{fileId}</if>
+            <if test="shareId != null  and shareId != ''"> and share_id = #{shareId}</if>
+        </where>
+    </select>
+    
+    <select id="selectFileShareById" parameterType="String" resultMap="FileShareResult">
+        <include refid="selectFileShareVo"/>
+        where file_share_id = #{fileShareId}
+    </select>
+        
+    <insert id="insertFileShare" parameterType="FileShare">
+        insert into file_share
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fileShareId != null">file_share_id,</if>
+            <if test="fileId != null">file_id,</if>
+            <if test="shareId != null">share_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fileShareId != null">#{fileShareId},</if>
+            <if test="fileId != null">#{fileId},</if>
+            <if test="shareId != null">#{shareId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFileShare" parameterType="FileShare">
+        update file_share
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fileId != null">file_id = #{fileId},</if>
+            <if test="shareId != null">share_id = #{shareId},</if>
+        </trim>
+        where file_share_id = #{fileShareId}
+    </update>
+
+    <delete id="deleteFileShareById" parameterType="String">
+        delete from file_share where file_share_id = #{fileShareId}
+    </delete>
+
+    <delete id="deleteFileShareByIds" parameterType="String">
+        delete from file_share where file_share_id in 
+        <foreach item="fileShareId" collection="array" open="(" separator="," close=")">
+            #{fileShareId}
+        </foreach>
+    </delete>
+</mapper>
