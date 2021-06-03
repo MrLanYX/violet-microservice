@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ClouddiscFileShareMapper">
+    
+    <resultMap type="ClouddiscFileShare" id="ClouddiscFileShareResult">
+        <result property="shareId"    column="share_id"    />
+        <result property="fileId"    column="file_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="shareUrl"    column="share_url"    />
+        <result property="effectiveTime"    column="effective_time"    />
+        <result property="shareStartTime"    column="share_start_time"    />
+        <result property="shareType"    column="share_type"    />
+        <result property="checkCode"    column="check_code"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+    </resultMap>
+
+    <sql id="selectClouddiscFileShareVo">
+        select share_id, file_id, user_id, share_url, effective_time, share_start_time, share_type, check_code, del_flag, create_time, create_by, update_time, update_by from clouddisc_file_share
+    </sql>
+
+    <select id="selectClouddiscFileShareList" parameterType="ClouddiscFileShare" resultMap="ClouddiscFileShareResult">
+        <include refid="selectClouddiscFileShareVo"/>
+        <where>  
+            <if test="shareId != null  and shareId != ''"> and share_id = #{shareId}</if>
+            <if test="fileId != null  and fileId != ''"> and file_id = #{fileId}</if>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="shareUrl != null  and shareUrl != ''"> and share_url = #{shareUrl}</if>
+            <if test="effectiveTime != null  and effectiveTime != ''"> and effective_time = #{effectiveTime}</if>
+            <if test="shareStartTime != null "> and share_start_time = #{shareStartTime}</if>
+            <if test="shareType != null  and shareType != ''"> and share_type = #{shareType}</if>
+            <if test="checkCode != null  and checkCode != ''"> and check_code = #{checkCode}</if>
+        </where>
+    </select>
+    
+    <select id="selectClouddiscFileShareById" parameterType="String" resultMap="ClouddiscFileShareResult">
+        <include refid="selectClouddiscFileShareVo"/>
+        where share_id = #{shareId}
+    </select>
+        
+    <insert id="insertClouddiscFileShare" parameterType="ClouddiscFileShare">
+        insert into clouddisc_file_share
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="shareId != null">share_id,</if>
+            <if test="fileId != null">file_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="shareUrl != null">share_url,</if>
+            <if test="effectiveTime != null">effective_time,</if>
+            <if test="shareStartTime != null">share_start_time,</if>
+            <if test="shareType != null">share_type,</if>
+            <if test="checkCode != null">check_code,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="shareId != null">#{shareId},</if>
+            <if test="fileId != null">#{fileId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="shareUrl != null">#{shareUrl},</if>
+            <if test="effectiveTime != null">#{effectiveTime},</if>
+            <if test="shareStartTime != null">#{shareStartTime},</if>
+            <if test="shareType != null">#{shareType},</if>
+            <if test="checkCode != null">#{checkCode},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+         </trim>
+    </insert>
+
+    <update id="updateClouddiscFileShare" parameterType="ClouddiscFileShare">
+        update clouddisc_file_share
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fileId != null">file_id = #{fileId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="shareUrl != null">share_url = #{shareUrl},</if>
+            <if test="effectiveTime != null">effective_time = #{effectiveTime},</if>
+            <if test="shareStartTime != null">share_start_time = #{shareStartTime},</if>
+            <if test="shareType != null">share_type = #{shareType},</if>
+            <if test="checkCode != null">check_code = #{checkCode},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+        </trim>
+        where share_id = #{shareId}
+    </update>
+
+    <delete id="deleteClouddiscFileShareById" parameterType="String">
+        delete from clouddisc_file_share where share_id = #{shareId}
+    </delete>
+
+    <delete id="deleteClouddiscFileShareByIds" parameterType="String">
+        delete from clouddisc_file_share where share_id in 
+        <foreach item="shareId" collection="array" open="(" separator="," close=")">
+            #{shareId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,4 +1,4 @@
-package com.brh.utils;
+package com.ruoyi.common.utils.file;
 
 import cn.hutool.core.util.ZipUtil;
 import net.lingala.zip4j.exception.ZipException;

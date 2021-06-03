@@ -43,7 +43,19 @@ public class SecurityUtils
             throw new CustomException("获取用户信息异常", HttpStatus.UNAUTHORIZED);
         }
     }
-
+    /**
+     * 获取用户id
+     **/
+    public static String getUserId(){
+        try
+        {
+            return getLoginUser().getUserId();
+        }
+        catch (Exception e)
+        {
+            throw new CustomException("获取用户账户异常", HttpStatus.UNAUTHORIZED);
+        }
+    }
     /**
      * 获取Authentication
      */

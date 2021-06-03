@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ClouddiscFileMapper">
+    <resultMap type="ClouddiscFile" id="ClouddiscFileResult">
+        <result property="id"    column="id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="fileType"    column="file_type"    />
+        <result property="sourceName"    column="source_name"    />
+        <result property="filePath"    column="file_path"    />
+        <result property="fileSuffix"    column="file_suffix"    />
+        <result property="fileSize"    column="file_size"    />
+        <result property="operationFlag"    column="operation_flag"    />
+        <result property="uploadTime"    column="upload_time"    />
+        <result property="recoverFlag"    column="recover_flag"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+    </resultMap>
+
+    <sql id="selectClouddiscFileVo">
+        select id, parent_id, user_id, file_type, source_name, file_path, file_suffix, file_size, operation_flag, upload_time, recover_flag, del_flag, create_time, create_by, update_time, update_by from clouddisc_file
+    </sql>
+
+    <select id="selectClouddiscFileList" parameterType="ClouddiscFile" resultMap="ClouddiscFileResult">
+        <include refid="selectClouddiscFileVo"/>
+        <where>
+            <if test="parentId != null  and parentId != ''"> and parent_id = #{parentId}</if>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="fileType != null  and fileType != ''"> and file_type = #{fileType}</if>
+            <if test="sourceName != null  and sourceName != ''"> and source_name like concat('%', #{sourceName}, '%')</if>
+            <if test="filePath != null  and filePath != ''"> and file_path = #{filePath}</if>
+            <if test="fileSuffix != null  and fileSuffix != ''"> and file_suffix = #{fileSuffix}</if>
+            <if test="fileSize != null  and fileSize != ''"> and file_size = #{fileSize}</if>
+            <if test="uploadTime != null "> and upload_time = #{uploadTime}</if>
+            and recover_flag = "1"
+            and del_flag = "0"
+        </where>
+    </select>
+
+    <select id="selectClouddiscFileById" parameterType="String" resultMap="ClouddiscFileResult">
+        <include refid="selectClouddiscFileVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectClouddiscFileByIds" parameterType="String" resultMap="ClouddiscFileResult">
+        <include refid="selectClouddiscFileVo"/>
+        where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </select>
+
+    <insert id="insertClouddiscFile" parameterType="ClouddiscFile">
+        insert into clouddisc_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="fileType != null">file_type,</if>
+            <if test="sourceName != null">source_name,</if>
+            <if test="filePath != null">file_path,</if>
+            <if test="fileSuffix != null">file_suffix,</if>
+            <if test="fileSize != null">file_size,</if>
+            <if test="operationFlag != null">operation_flag,</if>
+            <if test="uploadTime != null">upload_time,</if>
+            <if test="recoverFlag != null">recover_flag,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="fileType != null">#{fileType},</if>
+            <if test="sourceName != null">#{sourceName},</if>
+            <if test="filePath != null">#{filePath},</if>
+            <if test="fileSuffix != null">#{fileSuffix},</if>
+            <if test="fileSize != null">#{fileSize},</if>
+            <if test="operationFlag != null">#{operationFlag},</if>
+            <if test="uploadTime != null">#{uploadTime},</if>
+            <if test="recoverFlag != null">#{recoverFlag},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy}</if>
+         </trim>
+    </insert>
+
+    <update id="updateClouddiscFile" parameterType="ClouddiscFile">
+        update clouddisc_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="fileType != null">file_type = #{fileType},</if>
+            <if test="sourceName != null">source_name = #{sourceName},</if>
+            <if test="filePath != null">file_path = #{filePath},</if>
+            <if test="fileSuffix != null">file_suffix = #{fileSuffix},</if>
+            <if test="fileSize != null">file_size = #{fileSize},</if>
+            <if test="operationFlag != null">operation_flag = #{operationFlag},</if>
+            <if test="uploadTime != null">upload_time = #{uploadTime},</if>
+            <if test="recoverFlag != null">recover_flag = #{recoverFlag},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy}</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteClouddiscFileById" parameterType="String">
+        update clouddisc_file
+        <trim prefix="SET" suffixOverrides=",">
+        del_flag = "1"
+        and operation_flag = #{operationFlag}
+        </trim> where id = #{id}
+    </delete>
+
+    <delete id="deleteClouddiscFileByIds" parameterType="String">
+        update clouddisc_file
+        <trim prefix="SET" suffixOverrides=",">
+            del_flag = "1"
+            and operation_flag = #{operationFlag}
+        </trim>
+         where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,4 +1,4 @@
-package com.brh.utils;
+package com.ruoyi.common.utils.file;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -50,7 +50,7 @@ public class ZipUtils {
         if (!destFile.exists()) {
             destFile.mkdir();
         }
-        ZipFile zipFile = null;
+        ZipFile zipFile;
         try {
             zipFile = new ZipFile(file);
             String encodingStr = DEFAULT_ENCODING;

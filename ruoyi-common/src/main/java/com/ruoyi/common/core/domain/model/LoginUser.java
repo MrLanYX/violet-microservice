@@ -61,6 +61,16 @@ public class LoginUser implements UserDetails
      */
     private SysUser user;
 
+    /**
+     * @Description: 获取用户id
+     * @param
+     * @author banrenhe
+     * @date 2021/5/19 0019 9:46
+     * @return java.lang.String
+     */
+    public String getUserId(){
+        return String.valueOf(user.getUserId());
+    }
     public String getToken()
     {
         return token;

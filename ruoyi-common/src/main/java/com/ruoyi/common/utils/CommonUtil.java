@@ -1,4 +1,4 @@
-package com.licheng.dchy.common.core.util;
+package com.ruoyi.common.utils;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -12,7 +12,7 @@ import java.util.UUID;
 
 /**
  *- 通用工具类
- * @author shuyi
+ * @author banrenhe
  *
  */
 public class CommonUtil
@@ -46,7 +46,7 @@ public class CommonUtil
      */
     public static long getCurrentTime()
     {
-        return new Date().getTime();
+        return System.currentTimeMillis();
     }
 
     /**
@@ -83,13 +83,16 @@ public class CommonUtil
         {
             //Chrome
             codedfilename = URLEncoder.encode(fileName, "UTF-8");
-            codedfilename = StringUtil.replace(codedfilename, "%28", "(").replace("%29", ")");//替换空格
-            codedfilename = StringUtil.replace(codedfilename, "%7B", "{").replace("%7D", "}");//替换{}
+            //替换空格
+            codedfilename = StringUtils.replace(codedfilename, "%28", "(").replace("%29", ")");
+            //替换{}
+            codedfilename = StringUtils.replace(codedfilename, "%7B", "{").replace("%7D", "}");
         } else if (null != agent && -1 != agent.indexOf("Mozilla"))
         {
             //IE7+
             codedfilename = URLEncoder.encode(fileName, "UTF-8");
-            codedfilename = StringUtil.replace(codedfilename, "+", "%20");//替换空格
+            //替换空格
+            codedfilename = StringUtils.replace(codedfilename, "+", "%20");
         } else
         {
             codedfilename = fileName;
@@ -180,7 +183,7 @@ public class CommonUtil
         for (int i = 0; i < realPath.length(); i++)
         {
             String ch = realPath.charAt(i) + "";
-            if (ch.equals("/") || ch.equals("\\"))
+            if ("/".equals(ch) || "\\".equals(ch))
             {
                 ch = File.separator;
             }

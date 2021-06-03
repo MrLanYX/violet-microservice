@@ -58,4 +58,6 @@ public interface FileShareMapper
      * @return 结果
      */
     public int deleteFileShareByIds(String[] fileShareIds);
+
+
 }

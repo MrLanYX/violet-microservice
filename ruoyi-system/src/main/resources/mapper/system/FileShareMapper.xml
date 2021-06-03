@@ -55,7 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteFileShareByIds" parameterType="String">
-        delete from file_share where file_share_id in 
+        delete from file_share where share_id in
         <foreach item="fileShareId" collection="array" open="(" separator="," close=")">
             #{fileShareId}
         </foreach>
