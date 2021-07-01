@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.CloudCartoonMapper">
+    
+    <resultMap type="CloudCartoon" id="CloudCartoonResult">
+        <result property="cartoonId"    column="cartoon_id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="cartoonName"    column="cartoon_name"    />
+        <result property="cartoonType"    column="cartoon_type"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+    </resultMap>
+
+    <sql id="selectCloudCartoonVo">
+        select cartoon_id, parent_id, cartoon_name, cartoon_type, create_time, create_by, update_time, update_by from cloud_cartoon
+    </sql>
+
+    <select id="selectCloudCartoonList" parameterType="CloudCartoon" resultMap="CloudCartoonResult">
+        <include refid="selectCloudCartoonVo"/>
+        <where>  
+            <if test="parentId != null  and parentId != ''"> and parent_id = #{parentId}</if>
+            <if test="cartoonName != null  and cartoonName != ''"> and cartoon_name like concat('%', #{cartoonName}, '%')</if>
+            <if test="cartoonType != null  and cartoonType != ''"> and cartoon_type = #{cartoonType}</if>
+        </where>
+    </select>
+    
+    <select id="selectCloudCartoonById" parameterType="String" resultMap="CloudCartoonResult">
+        <include refid="selectCloudCartoonVo"/>
+        where cartoon_id = #{cartoonId}
+    </select>
+        
+    <insert id="insertCloudCartoon" parameterType="CloudCartoon">
+        insert into cloud_cartoon
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cartoonId != null">cartoon_id,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="cartoonName != null">cartoon_name,</if>
+            <if test="cartoonType != null">cartoon_type,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cartoonId != null">#{cartoonId},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="cartoonName != null">#{cartoonName},</if>
+            <if test="cartoonType != null">#{cartoonType},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCloudCartoon" parameterType="CloudCartoon">
+        update cloud_cartoon
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="cartoonName != null">cartoon_name = #{cartoonName},</if>
+            <if test="cartoonType != null">cartoon_type = #{cartoonType},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+        </trim>
+        where cartoon_id = #{cartoonId}
+    </update>
+
+    <delete id="deleteCloudCartoonById" parameterType="String">
+        delete from cloud_cartoon where cartoon_id = #{cartoonId}
+    </delete>
+
+    <delete id="deleteCloudCartoonByIds" parameterType="String">
+        delete from cloud_cartoon where cartoon_id in 
+        <foreach item="cartoonId" collection="array" open="(" separator="," close=")">
+            #{cartoonId}
+        </foreach>
+    </delete>
+</mapper>

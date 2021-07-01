@@ -36,6 +36,7 @@ public interface ClouddiscFileMapper
      */
     public int insertClouddiscFile(ClouddiscFile clouddiscFile);
 
+    int insertClouddiscFiles(List<ClouddiscFile> clouddiscFile);
     /**
      * 修改【请填写功能名称】
      * 
@@ -62,10 +63,19 @@ public interface ClouddiscFileMapper
 
     /**
      * @Description: 根据id集查询文件集合
-     * @param [ids]
+     * @param ids
      * @author Administrator
      * @date 2021/5/21 0021 17:51
      * @return java.util.List<com.ruoyi.system.domain.ClouddiscFile>
      */
-    List<ClouddiscFile> selectClouddiscFileByIds(@Param("ids")String[] ids);
+    List<ClouddiscFile> selectClouddiscFileByIds(@Param("id")String ids);
+
+    /**
+     * @Description: 根据父id获取文件
+     * @param
+     * @author Administrator
+     * @date 2021/6/10 0010 11:29
+     * @return java.util.List<com.ruoyi.system.domain.ClouddiscFile>
+     */
+    List<ClouddiscFile> getFilesByParentId(@Param("parentId")String parentId);
 }

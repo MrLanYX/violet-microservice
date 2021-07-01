@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.clouddisc;
 
 import java.util.List;
 
+import com.ruoyi.system.domain.DTO.ClouddiscFileShareDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -68,11 +69,12 @@ public class ClouddiscFileShareController extends BaseController
      * 获取【请填写功能名称】详细信息
      */
 //    @PreAuthorize("@ss.hasPermi('system:share:query')")
-    @GetMapping(value = "/{shareId}")
+    @GetMapping("/detail")
     @ApiOperation("文件分享详细")
-    public AjaxResult getInfo(@PathVariable("shareId") String shareId)
+    public AjaxResult getInfo(String shareId, ClouddiscFileShare clouddiscFileShare)
     {
-        return AjaxResult.success(clouddiscFileShareService.selectClouddiscFileShareById(shareId));
+        clouddiscFileShare.setShareId(shareId);
+        return AjaxResult.success(clouddiscFileShareService.selectClouddiscFileShareById(clouddiscFileShare));
     }
 
     /**
@@ -80,24 +82,24 @@ public class ClouddiscFileShareController extends BaseController
      */
 //    @PreAuthorize("@ss.hasPermi('system:share:add')")
     @Log(title = "【请填写功能名称】", businessType = BusinessType.INSERT)
-    @PostMapping
+    @PostMapping()
     @ApiOperation("文件分享添加")
-    public AjaxResult add(@RequestBody ClouddiscFileShare clouddiscFileShare, String[] fileIds)
+    public AjaxResult add(@RequestBody ClouddiscFileShareDTO clouddiscFileShareDTO)
     {
-        return toAjax(clouddiscFileShareService.insertClouddiscFileShare(clouddiscFileShare, fileIds));
+        return AjaxResult.success(clouddiscFileShareService.insertClouddiscFileShare(clouddiscFileShareDTO));
     }
 
     /**
      * 修改【请填写功能名称】
      */
 //    @PreAuthorize("@ss.hasPermi('system:share:edit')")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.UPDATE)
-    @PutMapping
-    @ApiOperation("文件分享编辑")
-    public AjaxResult edit(@RequestBody ClouddiscFileShare clouddiscFileShare)
-    {
-        return toAjax(clouddiscFileShareService.updateClouddiscFileShare(clouddiscFileShare));
-    }
+//    @Log(title = "【请填写功能名称】", businessType = BusinessType.UPDATE)
+//    @PutMapping
+//    @ApiOperation("文件分享编辑")
+//    public AjaxResult edit(@RequestBody ClouddiscFileShare clouddiscFileShare)
+//    {
+//        return toAjax(clouddiscFileShareService.updateClouddiscFileShare(clouddiscFileShare));
+//    }
 
     /**
      * 删除【请填写功能名称】

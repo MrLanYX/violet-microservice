@@ -43,7 +43,7 @@ public class ClouddiscFileShare extends BaseEntity
     private Date shareStartTime;
 
     /** 分享类型：永久，有时间效 */
-    @Excel(name = "分享类型：永久，有时间效")
+    @Excel(name = "分享类型：永久，有时效")
     private String shareType;
 
     /** 验证码 */

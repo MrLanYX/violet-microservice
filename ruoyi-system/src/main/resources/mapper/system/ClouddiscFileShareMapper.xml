@@ -35,12 +35,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="shareStartTime != null "> and share_start_time = #{shareStartTime}</if>
             <if test="shareType != null  and shareType != ''"> and share_type = #{shareType}</if>
             <if test="checkCode != null  and checkCode != ''"> and check_code = #{checkCode}</if>
+            and del_flag = '0'
         </where>
     </select>
     
     <select id="selectClouddiscFileShareById" parameterType="String" resultMap="ClouddiscFileShareResult">
         <include refid="selectClouddiscFileShareVo"/>
         where share_id = #{shareId}
+        and del_flag = '0'
     </select>
         
     <insert id="insertClouddiscFileShare" parameterType="ClouddiscFileShare">
@@ -97,11 +99,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteClouddiscFileShareById" parameterType="String">
-        delete from clouddisc_file_share where share_id = #{shareId}
+        update clouddisc_file_share set del_flag = '1' where share_id = #{shareId}
     </delete>
 
     <delete id="deleteClouddiscFileShareByIds" parameterType="String">
-        delete from clouddisc_file_share where share_id in 
+        update clouddisc_file_share set del_flag = '1' where share_id in
         <foreach item="shareId" collection="array" open="(" separator="," close=")">
             #{shareId}
         </foreach>

@@ -45,14 +45,38 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectClouddiscFileById" parameterType="String" resultMap="ClouddiscFileResult">
         <include refid="selectClouddiscFileVo"/>
         where id = #{id}
+        and del_flag = '0'
     </select>
 
-    <select id="selectClouddiscFileByIds" parameterType="String" resultMap="ClouddiscFileResult">
+    <select id="selectClouddiscFileByIds"  resultMap="ClouddiscFileResult">
         <include refid="selectClouddiscFileVo"/>
         where id in
-        <foreach item="id" collection="array" open="(" separator="," close=")">
-            #{ids}
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
         </foreach>
+        and del_flag = '0'
+    </select>
+
+    <select id="getFilesByParentId" parameterType="String" resultMap="ClouddiscFileResult">
+        SELECT
+        t3.*
+        FROM
+        (
+        SELECT
+        t1.*,
+        IF
+        (
+        FIND_IN_SET( t1.parent_id, @pids ) > 0,
+        @pids := CONCAT( @pids, ',', t1.id ),
+        0
+        ) AS ischild
+        FROM
+        ( SELECT * FROM clouddisc_file t WHERE t.del_flag = '0' ORDER BY t.parent_id, t.id ) t1,
+        ( SELECT @pids := #{parentId} ) t2
+        ) t3
+        WHERE
+        t3.ischild != '0'
+        OR t3.id = #{parentId}
     </select>
 
     <insert id="insertClouddiscFile" parameterType="ClouddiscFile">
@@ -124,7 +148,62 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         and operation_flag = #{operationFlag}
         </trim> where id = #{id}
     </delete>
-
+    <insert id="insertClouddiscFiles" parameterType="ClouddiscFile">
+        insert into clouddisc_file
+        (id,
+        parent_id,
+        user_id,
+        file_type,
+        source_name,
+        file_path,
+        file_suffix,
+        file_size,
+        operation_flag,
+        upload_time,
+        recover_flag,
+        del_flag,
+        create_time,
+        create_by,
+        update_time,
+        update_by)
+<!--        <trim prefix="(" suffix=")" suffixOverrides=",">-->
+<!--            <if test="id != null">id,</if>-->
+<!--            <if test="parentId != null">parent_id,</if>-->
+<!--            <if test="userId != null">user_id,</if>-->
+<!--            <if test="fileType != null">file_type,</if>-->
+<!--            <if test="sourceName != null">source_name,</if>-->
+<!--            <if test="filePath != null">file_path,</if>-->
+<!--            <if test="fileSuffix != null">file_suffix,</if>-->
+<!--            <if test="fileSize != null">file_size,</if>-->
+<!--            <if test="operationFlag != null">operation_flag,</if>-->
+<!--            <if test="uploadTime != null">upload_time,</if>-->
+<!--            <if test="recoverFlag != null">recover_flag,</if>-->
+<!--            <if test="delFlag != null">del_flag,</if>-->
+<!--            <if test="createTime != null">create_time,</if>-->
+<!--            <if test="createBy != null">create_by,</if>-->
+<!--            <if test="updateTime != null">update_time,</if>-->
+<!--            <if test="updateBy != null">update_by</if>-->
+<!--        </trim>-->
+        values
+            <foreach collection ="list" item="clouddiscFile"  separator =",">
+                (#{clouddiscFile.id},
+                #{clouddiscFile.parentId},
+                #{clouddiscFile.userId},
+                #{clouddiscFile.fileType},
+                #{clouddiscFile.sourceName},
+                #{clouddiscFile.filePath},
+                #{clouddiscFile.fileSuffix},
+                #{clouddiscFile.fileSize},
+                #{clouddiscFile.operationFlag},
+                #{clouddiscFile.uploadTime},
+                #{clouddiscFile.recoverFlag},
+                #{clouddiscFile.delFlag},
+                #{clouddiscFile.createTime},
+                #{clouddiscFile.createBy},
+                #{clouddiscFile.updateTime},
+                #{clouddiscFile.updateBy})
+            </foreach >
+    </insert>
     <delete id="deleteClouddiscFileByIds" parameterType="String">
         update clouddisc_file
         <trim prefix="SET" suffixOverrides=",">

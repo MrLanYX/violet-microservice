@@ -4,20 +4,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.hutool.core.lang.Assert;
 import com.ruoyi.common.utils.CommonUtil;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.VerifyCodeUtils;
 import com.ruoyi.system.constants.ClouddiscFileShareConstants;
 import com.ruoyi.system.domain.ClouddiscFile;
+import com.ruoyi.system.domain.DTO.ClouddiscFileShareDTO;
 import com.ruoyi.system.domain.FileShare;
 import com.ruoyi.system.mapper.ClouddiscFileMapper;
 import com.ruoyi.system.mapper.FileShareMapper;
-import com.ruoyi.system.service.IFileShareService;
+import com.ruoyi.system.util.TreeVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.ClouddiscFileShareMapper;
 import com.ruoyi.system.domain.ClouddiscFileShare;
 import com.ruoyi.system.service.IClouddiscFileShareService;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 【请填写功能名称】Service业务层处理
@@ -39,13 +43,18 @@ public class ClouddiscFileShareServiceImpl implements IClouddiscFileShareService
     /**
      * 查询【请填写功能名称】
      * 
-     * @param shareId 【请填写功能名称】ID
+     * @param clouddiscFileShare 【请填写功能名称】ID
      * @return 【请填写功能名称】
      */
     @Override
-    public ClouddiscFileShare selectClouddiscFileShareById(String shareId)
+    public Map<String, Object> selectClouddiscFileShareById(ClouddiscFileShare clouddiscFileShare)
     {
-        ClouddiscFileShare clouddiscFileShare = clouddiscFileShareMapper.selectClouddiscFileShareById(shareId);
+        ClouddiscFileShare getClouddiscFileShare = clouddiscFileShareMapper.selectClouddiscFileShareById(clouddiscFileShare.getShareId());
+        Assert.notNull(getClouddiscFileShare,"分享已被取消");
+        if(CommonUtil.isEmpty(getClouddiscFileShare)){
+            throw new RuntimeException("分享已被取消！");
+        }
+        //判断分享永久或有时限
         if(ClouddiscFileShareConstants.TIME_LIMITED.equals(clouddiscFileShare.getShareType())){
             DateUtils.getdayPoor(DateUtils.getNowDate(), clouddiscFileShare.getShareStartTime());
             //判断分享是否过期
@@ -53,14 +62,19 @@ public class ClouddiscFileShareServiceImpl implements IClouddiscFileShareService
                 throw new RuntimeException("分享已过期！");
             }
         }
+        //判断验证码
+        if(!clouddiscFileShare.getCheckCode().toLowerCase().equals(getClouddiscFileShare.getCheckCode().toLowerCase())){
+                throw new RuntimeException("验证码错误！");
+        }
         FileShare fileShare = new FileShare();
         fileShare.setShareId(clouddiscFileShare.getShareId());
         String[] fileIds = fileShareMapper.selectFileShareList(fileShare).stream().map(FileShare::getFileId).toArray(String[]::new);
-        List<ClouddiscFile> clouddiscFileList = clouddiscFileMapper.selectClouddiscFileByIds(fileIds);
+        List<ClouddiscFile> clouddiscFileList = clouddiscFileMapper.getFilesByParentId(fileIds[0]);
+
         Map<String, Object> map = new HashMap<>(8);
-        map.put("", clouddiscFileShareMapper.selectClouddiscFileShareById(shareId));
-        map.put("clouddiscFileList", clouddiscFileList);
-        return clouddiscFileShareMapper.selectClouddiscFileShareById(shareId);
+        map.put("clouddiscFileList", TreeVOUtil.getBuildTree(clouddiscFileList, clouddiscFileMapper.selectClouddiscFileById(fileIds[0]).getParentId()));
+        map.put("clouddiscFileShare", clouddiscFileShareMapper.selectClouddiscFileShareById(clouddiscFileShare.getShareId()));
+        return map;
     }
 
     /**
@@ -78,19 +92,30 @@ public class ClouddiscFileShareServiceImpl implements IClouddiscFileShareService
     /**
      * 新增【请填写功能名称】
      * 
-     * @param clouddiscFileShare 【请填写功能名称】
+     * @param clouddiscFileShareDTO 【请填写功能名称】
      * @return 结果
      */
     @Override
-    public int insertClouddiscFileShare(ClouddiscFileShare clouddiscFileShare, String[] fileIds)
+    @Transactional(rollbackFor = Exception.class)
+    public ClouddiscFileShare insertClouddiscFileShare(ClouddiscFileShareDTO clouddiscFileShareDTO)
     {
+        String id = CommonUtil.getUid();
+        ClouddiscFileShare clouddiscFileShare = new ClouddiscFileShare();
+        //生成地址
+        String shareUrl = "192.168.0.119:7957"+"/ParentView/cloud?id="+id;
+        //验证码
+        clouddiscFileShare.setCheckCode(VerifyCodeUtils.generateVerifyCode(4));
+        clouddiscFileShare.setShareId(id);
+        clouddiscFileShare.setShareType(clouddiscFileShareDTO.getShareType());
+        clouddiscFileShare.setEffectiveTime(clouddiscFileShareDTO.getEffectiveTime());
         clouddiscFileShare.setCreateTime(DateUtils.getNowDate());
         clouddiscFileShare.setCreateBy(SecurityUtils.getUsername());
         clouddiscFileShare.setShareStartTime(DateUtils.getNowDate());
         clouddiscFileShare.setUserId(SecurityUtils.getUserId());
+        clouddiscFileShare.setShareUrl(shareUrl);
         clouddiscFileShareMapper.insertClouddiscFileShare(clouddiscFileShare);
         for (String fileId:
-             fileIds) {
+                clouddiscFileShareDTO.getFileIds()) {
             FileShare fileShare = new FileShare();
             fileShare.setFileShareId(CommonUtil.getUid());
             //文件id
@@ -99,7 +124,7 @@ public class ClouddiscFileShareServiceImpl implements IClouddiscFileShareService
             fileShare.setShareId(clouddiscFileShare.getShareId());
             fileShareMapper.insertFileShare(fileShare);
         }
-        return 1;
+        return clouddiscFileShare;
     }
 
     /**

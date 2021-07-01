@@ -65,10 +65,29 @@ public interface IClouddiscFileService
 
     /**
      * @Description: 根据id集查询文件集合
-     * @param [ids]
+     * @param
      * @author Administrator
      * @date 2021/5/21 0021 17:51
      * @return java.util.List<com.ruoyi.system.domain.ClouddiscFile>
      */
-    List<ClouddiscFile> selectClouddiscFileByIds(String[] ids);
+    List<ClouddiscFile> selectClouddiscFileByIds(String ids);
+
+    /**
+     * @Description:
+     * @param
+     * @author Administrator
+     * @date 2021/6/10 0010 11:28
+     * @return java.util.List<com.ruoyi.system.domain.ClouddiscFile>
+     */
+    List<CommonTreeVO> getFilesByParentId(String parentId);
+
+    /**
+     * @Description: 文件收藏
+     * @param parentId
+     * @param ids
+     * @author Administrator
+     * @date 2021/6/21 0021 16:01
+     * @return boolean
+     */
+    boolean fileCollect(String parentId, String ids);
 }

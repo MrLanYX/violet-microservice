@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.CloudCartoonFileMapper">
+    
+    <resultMap type="CloudCartoonFile" id="CloudCartoonFileResult">
+        <result property="cartoonFileId"    column="cartoon_file_id"    />
+        <result property="cartoonId"    column="cartoon_id"    />
+        <result property="fileId"    column="file_id"    />
+    </resultMap>
+
+    <sql id="selectCloudCartoonFileVo">
+        select cartoon_file_id, cartoon_id, file_id from cloud_cartoon_file
+    </sql>
+
+    <select id="selectCloudCartoonFileList" parameterType="CloudCartoonFile" resultMap="CloudCartoonFileResult">
+        <include refid="selectCloudCartoonFileVo"/>
+        <where>  
+            <if test="cartoonId != null  and cartoonId != ''"> and cartoon_id = #{cartoonId}</if>
+            <if test="fileId != null  and fileId != ''"> and file_id = #{fileId}</if>
+        </where>
+    </select>
+    
+    <select id="selectCloudCartoonFileById" parameterType="Long" resultMap="CloudCartoonFileResult">
+        <include refid="selectCloudCartoonFileVo"/>
+        where cartoon_file_id = #{cartoonFileId}
+    </select>
+        
+    <insert id="insertCloudCartoonFile" parameterType="CloudCartoonFile" useGeneratedKeys="true" keyProperty="cartoonFileId">
+        insert into cloud_cartoon_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cartoonId != null">cartoon_id,</if>
+            <if test="fileId != null">file_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cartoonId != null">#{cartoonId},</if>
+            <if test="fileId != null">#{fileId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCloudCartoonFile" parameterType="CloudCartoonFile">
+        update cloud_cartoon_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cartoonId != null">cartoon_id = #{cartoonId},</if>
+            <if test="fileId != null">file_id = #{fileId},</if>
+        </trim>
+        where cartoon_file_id = #{cartoonFileId}
+    </update>
+
+    <delete id="deleteCloudCartoonFileById" parameterType="Long">
+        delete from cloud_cartoon_file where cartoon_file_id = #{cartoonFileId}
+    </delete>
+
+    <delete id="deleteCloudCartoonFileByIds" parameterType="String">
+        delete from cloud_cartoon_file where cartoon_file_id in 
+        <foreach item="cartoonFileId" collection="array" open="(" separator="," close=")">
+            #{cartoonFileId}
+        </foreach>
+    </delete>
+</mapper>
