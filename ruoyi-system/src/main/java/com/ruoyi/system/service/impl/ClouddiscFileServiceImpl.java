@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import cn.hutool.core.lang.Assert;
 import com.ruoyi.common.core.domain.model.TreeNode;
 import com.ruoyi.common.utils.CommonUtil;
 import com.ruoyi.common.utils.DateUtils;
@@ -15,7 +16,11 @@ import com.ruoyi.common.utils.file.FileTypeUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.system.constants.ClouddiscFileConstants;
 import com.ruoyi.system.domain.CloudDiscFileTree;
+import com.ruoyi.system.domain.CloudFileRecycle;
+import com.ruoyi.system.domain.CloudRecycleBin;
 import com.ruoyi.system.domain.vo.CommonTreeVO;
+import com.ruoyi.system.mapper.CloudFileRecycleMapper;
+import com.ruoyi.system.mapper.CloudRecycleBinMapper;
 import com.ruoyi.system.util.TreeVOUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +42,11 @@ public class ClouddiscFileServiceImpl implements IClouddiscFileService {
     @Autowired
     private ClouddiscFileMapper clouddiscFileMapper;
 
+    @Autowired
+    private CloudRecycleBinMapper cloudRecycleBinMapper;
+
+    @Autowired
+    private CloudFileRecycleMapper cloudFileRecycleMapper;
     /**
      * 查询【请填写功能名称】
      *
@@ -126,20 +136,10 @@ public class ClouddiscFileServiceImpl implements IClouddiscFileService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int deleteClouddiscFileByIds(String[] fileIds) {
-        String operationFlag = CommonUtil.getUUID();
-        //clouddiscFileMapper.selectClouddiscFileById()
-        for (String fileId :
-                fileIds) {
-            ClouddiscFile clouddiscFile = clouddiscFileMapper.selectClouddiscFileById(fileId);
-            if (ClouddiscFileConstants.DIRECTORY.equals(clouddiscFileMapper.selectClouddiscFileById(fileId).getFileType())) {
-                ClouddiscFile chlidClouddiscFile = new ClouddiscFile();
-                chlidClouddiscFile.setParentId(clouddiscFile.getId());
-                String[] ids = clouddiscFileMapper.selectClouddiscFileList(chlidClouddiscFile).stream().map(ClouddiscFile::getId).toArray(String[]::new);
-                clouddiscFileMapper.deleteClouddiscFileByIds(ids, operationFlag);
-            } else {
-                clouddiscFileMapper.deleteClouddiscFileById(fileId, operationFlag);
-            }
-
+        Assert.notNull(fileIds,"传入的数据为空");
+        for (String fileId:
+        fileIds) {
+            deleteClouddiscFileById(fileId);
         }
         return 1;
     }
@@ -153,19 +153,30 @@ public class ClouddiscFileServiceImpl implements IClouddiscFileService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int deleteClouddiscFileById(String fileId) {
-        String operationFlag = CommonUtil.getUUID();
-        String[] ids = clouddiscFileMapper.getFilesByParentId(fileId).stream().map(ClouddiscFile::getId).toArray(String[]::new);
-//        ClouddiscFile clouddiscFile = clouddiscFileMapper.selectClouddiscFileById(fileId);
-        clouddiscFileMapper.deleteClouddiscFileByIds(ids, operationFlag);
-        //判断是文件还是文件夹
-//        if (ClouddiscFileConstants.DIRECTORY.equals(clouddiscFile.getFileType())) {
-//            ClouddiscFile chlidClouddiscFile = new ClouddiscFile();
-//            chlidClouddiscFile.setParentId(clouddiscFile.getId());
-//            String[] ids = clouddiscFileMapper.selectClouddiscFileList(chlidClouddiscFile).stream().map(ClouddiscFile::getId).toArray(String[]::new);
-//            clouddiscFileMapper.deleteClouddiscFileByIds(ids, operationFlag);
-//        } else {
-//            clouddiscFileMapper.deleteClouddiscFileById(fileId, operationFlag);
-//        }
+        Assert.notNull(fileId,"传入的数据为空");
+        List<ClouddiscFile> clouddiscFileList = clouddiscFileMapper.getFilesByParentId(fileId);
+        String[] ids = clouddiscFileList.stream().map(ClouddiscFile::getId).toArray(String[]::new);
+
+        CloudRecycleBin cloudRecycleBin = new CloudRecycleBin();
+        cloudRecycleBin.setId(CommonUtil.getUid());
+        ClouddiscFile clouddiscFile = clouddiscFileMapper.selectClouddiscFileById(fileId);
+        cloudRecycleBin.setFileName(clouddiscFile.getSourceName());
+        cloudRecycleBin.setCreateTime(DateUtils.getNowDate());
+        cloudRecycleBin.setCreateBy(SecurityUtils.getUserId());
+        //删除文件
+        clouddiscFileMapper.deleteClouddiscFileByIds(ids);
+        //插入回收站
+        cloudRecycleBinMapper.insertCloudRecycleBin(cloudRecycleBin);
+        List<CloudFileRecycle> cloudFileRecycleList = new ArrayList<>();
+        for (String fileId1: ids) {
+            CloudFileRecycle cloudFileRecycle = new CloudFileRecycle();
+            cloudFileRecycle.setId(CommonUtil.getUid());
+            cloudFileRecycle.setRecycleId(cloudRecycleBin.getId());
+            cloudFileRecycle.setFileId(fileId1);
+            cloudFileRecycleList.add(cloudFileRecycle);
+        }
+        //批量插入删除关联
+        cloudFileRecycleMapper.insertCloudFileRecycles(cloudFileRecycleList);
         return 1;
     }
 
@@ -177,7 +188,11 @@ public class ClouddiscFileServiceImpl implements IClouddiscFileService {
     @Override
     public List<CommonTreeVO> getFilesByParentId(String parentId) {
         List<ClouddiscFile> list = clouddiscFileMapper.getFilesByParentId(parentId);
-        return TreeVOUtil.getBuildTree(list, clouddiscFileMapper.selectClouddiscFileById(parentId).getParentId());
+        if(CommonUtil.isNotEmpty(list)){
+            return TreeVOUtil.getBuildTree(list, clouddiscFileMapper.selectClouddiscFileById(parentId).getParentId());
+        }else {
+            return null;
+        }
     }
 
     @Override

@@ -78,6 +78,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         t3.ischild != '0'
         OR t3.id = #{parentId}
     </select>
+    <select id="selectDeleteClouddiscFileById" resultMap="ClouddiscFileResult">
+        <include refid="selectClouddiscFileVo"/>
+        where id = #{id}
+        and del_flag = '1'
+    </select>
 
     <insert id="insertClouddiscFile" parameterType="ClouddiscFile">
         insert into clouddisc_file
@@ -141,13 +146,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deleteClouddiscFileById" parameterType="String">
+    <update id="deleteClouddiscFileById" parameterType="String">
         update clouddisc_file
         <trim prefix="SET" suffixOverrides=",">
         del_flag = "1"
         and operation_flag = #{operationFlag}
         </trim> where id = #{id}
-    </delete>
+    </update>
     <insert id="insertClouddiscFiles" parameterType="ClouddiscFile">
         insert into clouddisc_file
         (id,
@@ -204,15 +209,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 #{clouddiscFile.updateBy})
             </foreach >
     </insert>
-    <delete id="deleteClouddiscFileByIds" parameterType="String">
+    <update id="deleteClouddiscFileByIds">
         update clouddisc_file
         <trim prefix="SET" suffixOverrides=",">
             del_flag = "1"
-            and operation_flag = #{operationFlag}
         </trim>
          where id in
-        <foreach item="id" collection="array" open="(" separator="," close=")">
-            #{id}
+        <foreach item="item" collection="array" open="(" separator="," close=")">
+            #{item}
         </foreach>
-    </delete>
+    </update>
+
+    <update id="recoverClouddiscFiles" >
+        update clouddisc_file
+        <trim prefix="SET" suffixOverrides=",">
+            del_flag = "0"
+        </trim>
+        where id in
+        <foreach item="ids" collection="array" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </update>
 </mapper>

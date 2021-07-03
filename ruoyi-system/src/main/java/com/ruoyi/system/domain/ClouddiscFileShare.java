@@ -23,7 +23,7 @@ public class ClouddiscFileShare extends BaseEntity
 
     /** 文件id */
     @Excel(name = "文件id")
-    private String fileId;
+    private String fileName;
 
     /** 用户id */
     @Excel(name = "用户id")
@@ -62,14 +62,14 @@ public class ClouddiscFileShare extends BaseEntity
     {
         return shareId;
     }
-    public void setFileId(String fileId) 
+    public void setFileName(String fileId)
     {
-        this.fileId = fileId;
+        this.fileName = fileId;
     }
 
-    public String getFileId() 
+    public String getFileName()
     {
-        return fileId;
+        return fileName;
     }
     public void setUserId(String userId) 
     {
@@ -139,7 +139,7 @@ public class ClouddiscFileShare extends BaseEntity
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("shareId", getShareId())
-            .append("fileId", getFileId())
+            .append("fileName", getFileName())
             .append("userId", getUserId())
             .append("shareUrl", getShareUrl())
             .append("effectiveTime", getEffectiveTime())

@@ -6,7 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <resultMap type="ClouddiscFileShare" id="ClouddiscFileShareResult">
         <result property="shareId"    column="share_id"    />
-        <result property="fileId"    column="file_id"    />
+        <result property="fileName"    column="file_id"    />
         <result property="userId"    column="user_id"    />
         <result property="shareUrl"    column="share_url"    />
         <result property="effectiveTime"    column="effective_time"    />
@@ -28,7 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectClouddiscFileShareVo"/>
         <where>  
             <if test="shareId != null  and shareId != ''"> and share_id = #{shareId}</if>
-            <if test="fileId != null  and fileId != ''"> and file_id = #{fileId}</if>
+            <if test="fileName != null  and fileName != ''"> and file_id = #{fileName}</if>
             <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
             <if test="shareUrl != null  and shareUrl != ''"> and share_url = #{shareUrl}</if>
             <if test="effectiveTime != null  and effectiveTime != ''"> and effective_time = #{effectiveTime}</if>
@@ -49,7 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into clouddisc_file_share
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="shareId != null">share_id,</if>
-            <if test="fileId != null">file_id,</if>
+            <if test="fileName != null">file_id,</if>
             <if test="userId != null">user_id,</if>
             <if test="shareUrl != null">share_url,</if>
             <if test="effectiveTime != null">effective_time,</if>
@@ -64,7 +64,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="shareId != null">#{shareId},</if>
-            <if test="fileId != null">#{fileId},</if>
+            <if test="fileName != null">#{fileName},</if>
             <if test="userId != null">#{userId},</if>
             <if test="shareUrl != null">#{shareUrl},</if>
             <if test="effectiveTime != null">#{effectiveTime},</if>
@@ -82,7 +82,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateClouddiscFileShare" parameterType="ClouddiscFileShare">
         update clouddisc_file_share
         <trim prefix="SET" suffixOverrides=",">
-            <if test="fileId != null">file_id = #{fileId},</if>
+            <if test="fileName != null">file_id = #{fileName},</if>
             <if test="userId != null">user_id = #{userId},</if>
             <if test="shareUrl != null">share_url = #{shareUrl},</if>
             <if test="effectiveTime != null">effective_time = #{effectiveTime},</if>

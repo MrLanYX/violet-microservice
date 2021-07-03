@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.CloudFileRecycleMapper">
+    
+    <resultMap type="CloudFileRecycle" id="CloudFileRecycleResult">
+        <result property="id"    column="id"    />
+        <result property="recycleId"    column="recycle_id"    />
+        <result property="fileId"    column="file_id"    />
+    </resultMap>
+
+    <sql id="selectCloudFileRecycleVo">
+        select id, recycle_id, file_id from cloud_file_recycle
+    </sql>
+
+    <select id="selectCloudFileRecycleList" parameterType="CloudFileRecycle" resultMap="CloudFileRecycleResult">
+        <include refid="selectCloudFileRecycleVo"/>
+        <where>  
+            <if test="recycleId != null  and recycleId != ''"> and recycle_id = #{recycleId}</if>
+            <if test="fileId != null  and fileId != ''"> and file_id = #{fileId}</if>
+        </where>
+    </select>
+    
+    <select id="selectCloudFileRecycleById" parameterType="String" resultMap="CloudFileRecycleResult">
+        <include refid="selectCloudFileRecycleVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCloudFileRecycle" parameterType="CloudFileRecycle">
+        insert into cloud_file_recycle
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="recycleId != null">recycle_id,</if>
+            <if test="fileId != null">file_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="recycleId != null">#{recycleId},</if>
+            <if test="fileId != null">#{fileId},</if>
+         </trim>
+    </insert>
+    <insert id="insertCloudFileRecycles">
+        insert into cloud_file_recycle
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            id,
+            recycle_id,
+            file_id,
+        </trim>
+        values
+        <foreach collection ="list" item="cloudFileRecycleList"  separator =",">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{cloudFileRecycleList.id},
+            #{cloudFileRecycleList.recycleId},
+            #{cloudFileRecycleList.fileId},
+        </trim>
+        </foreach>
+    </insert>
+
+    <update id="updateCloudFileRecycle" parameterType="CloudFileRecycle">
+        update cloud_file_recycle
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="recycleId != null">recycle_id = #{recycleId},</if>
+            <if test="fileId != null">file_id = #{fileId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCloudFileRecycleById" parameterType="String">
+        delete from cloud_file_recycle where id = #{id}
+    </delete>
+
+    <delete id="deleteCloudFileRecycleByIds" parameterType="String">
+        delete from cloud_file_recycle where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.CloudRecycleBinMapper">
+    
+    <resultMap type="CloudRecycleBin" id="CloudRecycleBinResult">
+        <result property="id"    column="id"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+    </resultMap>
+
+    <sql id="selectCloudRecycleBinVo">
+        select id, file_name, del_flag, create_time, create_by, update_time, update_by from cloud_recycle_bin
+    </sql>
+
+    <select id="selectCloudRecycleBinList" parameterType="CloudRecycleBin" resultMap="CloudRecycleBinResult">
+        <include refid="selectCloudRecycleBinVo"/>
+        <where>
+            del_flag = '0'
+            <if test="fileName != null  and fileName != ''"> and file_name = #{fileName}</if>
+        </where>
+    </select>
+    
+    <select id="selectCloudRecycleBinById" parameterType="String" resultMap="CloudRecycleBinResult">
+        <include refid="selectCloudRecycleBinVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCloudRecycleBin" parameterType="CloudRecycleBin">
+        insert into cloud_recycle_bin
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="fileName != null">file_name,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="fileName != null">#{fileName},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertCloudRecycleBins" parameterType="CloudRecycleBin">
+        insert into cloud_recycle_bin
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="fileName != null">file_name,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+        </trim>
+        values
+        <foreach collection ="list" item="cloudRecycleBinList"  separator =",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{cloudRecycleBinList.id},</if>
+            <if test="fileName != null">#{cloudRecycleBinList.fileName},</if>
+            <if test="delFlag != null">#{cloudRecycleBinList.delFlag},</if>
+            <if test="createTime != null">#{cloudRecycleBinList.createTime},</if>
+            <if test="createBy != null">#{cloudRecycleBinList.createBy},</if>
+            <if test="updateTime != null">#{cloudRecycleBinList.updateTime},</if>
+            <if test="updateBy != null">#{cloudRecycleBinList.updateBy},</if>
+            </trim>
+        </foreach>
+    </insert>
+    <update id="updateCloudRecycleBin" parameterType="CloudRecycleBin">
+        update cloud_recycle_bin
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fileName != null">file_name = #{fileName},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="deleteCloudRecycleBinById" parameterType="String">
+        update cloud_recycle_bin set del_flag = '1' where id = #{id}
+    </update>
+
+    <update id="recoverCloudRecycleBins" parameterType="String">
+        update cloud_recycle_bin set cloud_recycle_bin.del_flag = '1' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+</mapper>

@@ -113,13 +113,13 @@ public class ClouddiscFileController extends BaseController
      * 删除【请填写功能名称】
      */
 //    @PreAuthorize("@ss.hasPermi('system:file:remove')")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{fileIds}")
-    @ApiOperation("文件删除")
-    public AjaxResult remove(@PathVariable String[] fileIds)
-    {
-        return toAjax(clouddiscFileService.deleteClouddiscFileByIds(fileIds));
-    }
+//    @Log(title = "【请填写功能名称】", businessType = BusinessType.DELETE)
+//	@DeleteMapping("/{fileIds}")
+//    @ApiOperation("文件删除")
+//    public AjaxResult remove(@PathVariable String[] fileIds)
+//    {
+//        return toAjax(clouddiscFileService.deleteClouddiscFileByIds(fileIds));
+//    }
 
     @GetMapping("/getFilesByParentId/{parentId}")
     @ApiOperation("获取文件夹下的文件")
@@ -166,9 +166,41 @@ public class ClouddiscFileController extends BaseController
      * @date 2021/6/29 0029 9:59
      * @return com.ruoyi.common.core.domain.AjaxResult
      */
+    @Log(title = "文件收藏", businessType = BusinessType.INSERT)
     @PostMapping("/fileCollect")
+    @ApiOperation("文件收藏")
     public AjaxResult fileCollect(String parentId ,String id){
 
         return AjaxResult.success(clouddiscFileService.fileCollect(parentId, id));
+    }
+
+    /**
+     * @Description: 文件删除
+     * @param id
+     * @author Administrator
+     * @date 2021/6/29 0029 9:59
+     * @return com.ruoyi.common.core.domain.AjaxResult
+     */
+    @Log(title = "文件删除", businessType = BusinessType.DELETE)
+    @PostMapping("/deleteFile")
+    @ApiOperation("文件删除")
+    public AjaxResult deleteFile(String id){
+
+        return AjaxResult.success(clouddiscFileService.deleteClouddiscFileById(id));
+    }
+
+    /**
+     * @Description: 文件删除
+     * @param id
+     * @author Administrator
+     * @date 2021/6/29 0029 9:59
+     * @return com.ruoyi.common.core.domain.AjaxResult
+     */
+    @Log(title = "批量文件删除", businessType = BusinessType.DELETE)
+    @PostMapping("/deleteFiles")
+    @ApiOperation("批量文件删除")
+    public AjaxResult deleteFiles(String[] id){
+
+        return AjaxResult.success(clouddiscFileService.deleteClouddiscFileByIds(id));
     }
 }

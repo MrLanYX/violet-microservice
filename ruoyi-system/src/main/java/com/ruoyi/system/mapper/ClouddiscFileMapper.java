@@ -20,6 +20,7 @@ public interface ClouddiscFileMapper
      */
     public ClouddiscFile selectClouddiscFileById(String id);
 
+    ClouddiscFile selectDeleteClouddiscFileById(String id);
     /**
      * 查询【请填写功能名称】列表
      * 
@@ -59,7 +60,7 @@ public interface ClouddiscFileMapper
      * @param ids 需要删除的数据ID
      * @return 结果
      */
-    public int deleteClouddiscFileByIds(String[] ids, @Param("operationFlag")String operationFlag);
+    public int deleteClouddiscFileByIds(String[] ids);
 
     /**
      * @Description: 根据id集查询文件集合
@@ -78,4 +79,13 @@ public interface ClouddiscFileMapper
      * @return java.util.List<com.ruoyi.system.domain.ClouddiscFile>
      */
     List<ClouddiscFile> getFilesByParentId(@Param("parentId")String parentId);
+
+    /**
+     * @Description: 恢复回收站文件
+     * @param ids
+     * @author Administrator
+     * @date 2021/7/1 0001 17:13
+     * @return int
+     */
+    int recoverClouddiscFiles(String[] ids);
 }
