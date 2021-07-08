@@ -3,8 +3,8 @@ package com.ruoyi.system.service.impl;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.system.mapper.FileShareMapper;
-import com.ruoyi.system.domain.FileShare;
+import com.ruoyi.system.mapper.CloudFileShareMapper;
+import com.ruoyi.system.domain.CloudFileShare;
 import com.ruoyi.system.service.IFileShareService;
 
 /**
@@ -17,7 +17,7 @@ import com.ruoyi.system.service.IFileShareService;
 public class FileShareServiceImpl implements IFileShareService 
 {
     @Autowired
-    private FileShareMapper fileShareMapper;
+    private CloudFileShareMapper cloudFileShareMapper;
 
     /**
      * 查询【请填写功能名称】
@@ -26,45 +26,45 @@ public class FileShareServiceImpl implements IFileShareService
      * @return 【请填写功能名称】
      */
     @Override
-    public FileShare selectFileShareById(String fileShareId)
+    public CloudFileShare selectFileShareById(String fileShareId)
     {
-        return fileShareMapper.selectFileShareById(fileShareId);
+        return cloudFileShareMapper.selectFileShareById(fileShareId);
     }
 
     /**
      * 查询【请填写功能名称】列表
      * 
-     * @param fileShare 【请填写功能名称】
+     * @param cloudFileShare 【请填写功能名称】
      * @return 【请填写功能名称】
      */
     @Override
-    public List<FileShare> selectFileShareList(FileShare fileShare)
+    public List<CloudFileShare> selectFileShareList(CloudFileShare cloudFileShare)
     {
-        return fileShareMapper.selectFileShareList(fileShare);
+        return cloudFileShareMapper.selectFileShareList(cloudFileShare);
     }
 
     /**
      * 新增【请填写功能名称】
      * 
-     * @param fileShare 【请填写功能名称】
+     * @param cloudFileShare 【请填写功能名称】
      * @return 结果
      */
     @Override
-    public int insertFileShare(FileShare fileShare)
+    public int insertFileShare(CloudFileShare cloudFileShare)
     {
-        return fileShareMapper.insertFileShare(fileShare);
+        return cloudFileShareMapper.insertFileShare(cloudFileShare);
     }
 
     /**
      * 修改【请填写功能名称】
      * 
-     * @param fileShare 【请填写功能名称】
+     * @param cloudFileShare 【请填写功能名称】
      * @return 结果
      */
     @Override
-    public int updateFileShare(FileShare fileShare)
+    public int updateFileShare(CloudFileShare cloudFileShare)
     {
-        return fileShareMapper.updateFileShare(fileShare);
+        return cloudFileShareMapper.updateFileShare(cloudFileShare);
     }
 
     /**
@@ -76,7 +76,7 @@ public class FileShareServiceImpl implements IFileShareService
     @Override
     public int deleteFileShareByIds(String[] fileShareIds)
     {
-        return fileShareMapper.deleteFileShareByIds(fileShareIds);
+        return cloudFileShareMapper.deleteFileShareByIds(fileShareIds);
     }
 
     /**
@@ -88,6 +88,6 @@ public class FileShareServiceImpl implements IFileShareService
     @Override
     public int deleteFileShareById(String fileShareId)
     {
-        return fileShareMapper.deleteFileShareById(fileShareId);
+        return cloudFileShareMapper.deleteFileShareById(fileShareId);
     }
 }

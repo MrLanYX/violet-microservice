@@ -37,7 +37,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fileSuffix != null  and fileSuffix != ''"> and file_suffix = #{fileSuffix}</if>
             <if test="fileSize != null  and fileSize != ''"> and file_size = #{fileSize}</if>
             <if test="uploadTime != null "> and upload_time = #{uploadTime}</if>
-            and recover_flag = "1"
             and del_flag = "0"
         </where>
     </select>

@@ -3,8 +3,10 @@ package com.ruoyi.system.service.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import cn.hutool.core.lang.Assert;
+import com.ruoyi.common.annotation.DataUserScope;
 import com.ruoyi.common.utils.CommonUtil;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
@@ -12,9 +14,9 @@ import com.ruoyi.common.utils.VerifyCodeUtils;
 import com.ruoyi.system.constants.ClouddiscFileShareConstants;
 import com.ruoyi.system.domain.ClouddiscFile;
 import com.ruoyi.system.domain.DTO.ClouddiscFileShareDTO;
-import com.ruoyi.system.domain.FileShare;
+import com.ruoyi.system.domain.CloudFileShare;
 import com.ruoyi.system.mapper.ClouddiscFileMapper;
-import com.ruoyi.system.mapper.FileShareMapper;
+import com.ruoyi.system.mapper.CloudFileShareMapper;
 import com.ruoyi.system.util.TreeVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,7 @@ public class ClouddiscFileShareServiceImpl implements IClouddiscFileShareService
     private ClouddiscFileShareMapper clouddiscFileShareMapper;
 
     @Autowired
-    private FileShareMapper fileShareMapper;
+    private CloudFileShareMapper cloudFileShareMapper;
 
     @Autowired
     private ClouddiscFileMapper clouddiscFileMapper;
@@ -49,28 +51,26 @@ public class ClouddiscFileShareServiceImpl implements IClouddiscFileShareService
     @Override
     public Map<String, Object> selectClouddiscFileShareById(ClouddiscFileShare clouddiscFileShare)
     {
+
         ClouddiscFileShare getClouddiscFileShare = clouddiscFileShareMapper.selectClouddiscFileShareById(clouddiscFileShare.getShareId());
         Assert.notNull(getClouddiscFileShare,"分享已被取消");
-        if(CommonUtil.isEmpty(getClouddiscFileShare)){
-            throw new RuntimeException("分享已被取消！");
-        }
+        //判断验证码
+        Assert.isTrue(clouddiscFileShare.getCheckCode().toLowerCase().equals(getClouddiscFileShare.getCheckCode().toLowerCase()),"验证码错误");
         //判断分享永久或有时限
         if(ClouddiscFileShareConstants.TIME_LIMITED.equals(getClouddiscFileShare.getShareType())){
             //判断分享是否过期
-            if(Integer.parseInt(getClouddiscFileShare.getEffectiveTime())<=DateUtils.getdayPoor(DateUtils.getNowDate(), getClouddiscFileShare.getShareStartTime())){
-                throw new RuntimeException("分享已过期！");
-            }
+            Assert.isFalse(Integer.parseInt(getClouddiscFileShare.getEffectiveTime())
+                    <=DateUtils.getdayPoor(DateUtils.getNowDate(), getClouddiscFileShare.getShareStartTime()),"分享已过期");
         }
-        //判断验证码
-        if(!clouddiscFileShare.getCheckCode().toLowerCase().equals(getClouddiscFileShare.getCheckCode().toLowerCase())){
-                throw new RuntimeException("验证码错误！");
-        }
-        FileShare fileShare = new FileShare();
-        fileShare.setShareId(clouddiscFileShare.getShareId());
-        String[] fileIds = fileShareMapper.selectFileShareList(fileShare).stream().map(FileShare::getFileId).toArray(String[]::new);
+                CloudFileShare cloudFileShare = new CloudFileShare();
+        cloudFileShare.setShareId(clouddiscFileShare.getShareId());
+        String[] fileIds = cloudFileShareMapper.selectFileShareList(cloudFileShare).stream().map(CloudFileShare::getFileId).toArray(String[]::new);
+        ClouddiscFile  clouddiscFile = clouddiscFileMapper.selectClouddiscFileById(fileIds[0]);
+        Assert.notNull(clouddiscFile, "文件已被删除");
         List<ClouddiscFile> clouddiscFileList = clouddiscFileMapper.getFilesByParentId(fileIds[0]);
+
         Map<String, Object> map = new HashMap<>(8);
-        map.put("sourceName",clouddiscFileMapper.selectClouddiscFileById(fileIds[0]).getSourceName());
+        map.put("sourceName",clouddiscFile.getSourceName());
         map.put("clouddiscFileList", TreeVOUtil.getBuildTree(clouddiscFileList, clouddiscFileMapper.selectClouddiscFileById(fileIds[0]).getParentId()));
         map.put("clouddiscFileShare", clouddiscFileShareMapper.selectClouddiscFileShareById(clouddiscFileShare.getShareId()));
         return map;
@@ -83,9 +83,13 @@ public class ClouddiscFileShareServiceImpl implements IClouddiscFileShareService
      * @return 【请填写功能名称】
      */
     @Override
+    @DataUserScope(value = "file")
     public List<ClouddiscFileShare> selectClouddiscFileShareList(ClouddiscFileShare clouddiscFileShare)
     {
-        return clouddiscFileShareMapper.selectClouddiscFileShareList(clouddiscFileShare);
+        return clouddiscFileShareMapper.selectClouddiscFileShareList(clouddiscFileShare)
+                .stream()
+                .filter(recycleBin-> SecurityUtils.getUserId().equals(recycleBin.getUserId()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -118,13 +122,13 @@ public class ClouddiscFileShareServiceImpl implements IClouddiscFileShareService
         clouddiscFileShareMapper.insertClouddiscFileShare(clouddiscFileShare);
         for (String fileId:
                 clouddiscFileShareDTO.getFileIds()) {
-            FileShare fileShare = new FileShare();
-            fileShare.setFileShareId(CommonUtil.getUid());
+            CloudFileShare cloudFileShare = new CloudFileShare();
+            cloudFileShare.setFileShareId(CommonUtil.getUid());
             //文件id
-            fileShare.setFileId(fileId);
+            cloudFileShare.setFileId(fileId);
             //分享id
-            fileShare.setShareId(clouddiscFileShare.getShareId());
-            fileShareMapper.insertFileShare(fileShare);
+            cloudFileShare.setShareId(clouddiscFileShare.getShareId());
+            cloudFileShareMapper.insertFileShare(cloudFileShare);
         }
         return clouddiscFileShare;
     }
@@ -152,7 +156,7 @@ public class ClouddiscFileShareServiceImpl implements IClouddiscFileShareService
     public int deleteClouddiscFileShareByIds(String[] shareIds)
     {
         clouddiscFileShareMapper.deleteClouddiscFileShareByIds(shareIds);
-        fileShareMapper.deleteFileShareByIds(shareIds);
+        cloudFileShareMapper.deleteFileShareByIds(shareIds);
         return clouddiscFileShareMapper.deleteClouddiscFileShareByIds(shareIds);
     }
 

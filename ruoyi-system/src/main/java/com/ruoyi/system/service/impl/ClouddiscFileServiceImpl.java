@@ -18,6 +18,7 @@ import com.ruoyi.system.constants.ClouddiscFileConstants;
 import com.ruoyi.system.domain.CloudDiscFileTree;
 import com.ruoyi.system.domain.CloudFileRecycle;
 import com.ruoyi.system.domain.CloudRecycleBin;
+import com.ruoyi.system.domain.DTO.ClouddiscFileDTO;
 import com.ruoyi.system.domain.vo.CommonTreeVO;
 import com.ruoyi.system.mapper.CloudFileRecycleMapper;
 import com.ruoyi.system.mapper.CloudRecycleBinMapper;
@@ -55,7 +56,9 @@ public class ClouddiscFileServiceImpl implements IClouddiscFileService {
      */
     @Override
     public ClouddiscFile selectClouddiscFileById(String fileId) {
-        return clouddiscFileMapper.selectClouddiscFileById(fileId);
+        ClouddiscFile clouddiscFile = clouddiscFileMapper.selectClouddiscFileById(fileId);
+        Assert.isFalse(!SecurityUtils.getUserId().equals(clouddiscFile.getUserId()),"查不到此数据");
+        return clouddiscFile;
     }
 
     /**
@@ -67,7 +70,10 @@ public class ClouddiscFileServiceImpl implements IClouddiscFileService {
     @Override
     public List<CommonTreeVO> selectClouddiscFileList(ClouddiscFile clouddiscFile) {
 
-        List<ClouddiscFile> clouddiscFiles = clouddiscFileMapper.selectClouddiscFileList(clouddiscFile);
+        List<ClouddiscFile> clouddiscFiles = clouddiscFileMapper.selectClouddiscFileList(clouddiscFile)
+                .stream()
+                .filter(recycleBin-> SecurityUtils.getUserId().equals(recycleBin.getUserId()))
+                .collect(Collectors.toList());
         List<CommonTreeVO> lists = TreeVOUtil.getBuildTree(clouddiscFiles, "-1");
         return lists;
     }
@@ -182,12 +188,17 @@ public class ClouddiscFileServiceImpl implements IClouddiscFileService {
 
     @Override
     public List<ClouddiscFile> selectClouddiscFileByIds(String ids) {
-        return clouddiscFileMapper.selectClouddiscFileByIds(ids);
+        return clouddiscFileMapper.selectClouddiscFileByIds(ids).stream()
+                .filter(recycleBin-> SecurityUtils.getUserId().equals(recycleBin.getUserId()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<CommonTreeVO> getFilesByParentId(String parentId) {
-        List<ClouddiscFile> list = clouddiscFileMapper.getFilesByParentId(parentId);
+        List<ClouddiscFile> list = clouddiscFileMapper.getFilesByParentId(parentId)
+                .stream()
+                .filter(recycleBin-> SecurityUtils.getUserId().equals(recycleBin.getUserId()))
+                .collect(Collectors.toList());
         if(CommonUtil.isNotEmpty(list)){
             return TreeVOUtil.getBuildTree(list, clouddiscFileMapper.selectClouddiscFileById(parentId).getParentId());
         }else {
@@ -197,18 +208,18 @@ public class ClouddiscFileServiceImpl implements IClouddiscFileService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean fileCollect(String parentId, String id) {
-        List<ClouddiscFile> list = clouddiscFileMapper.getFilesByParentId(id);
+    public boolean fileCollect(ClouddiscFileDTO clouddiscFileDTO) {
+        List<ClouddiscFile> list = clouddiscFileMapper.getFilesByParentId(clouddiscFileDTO.getId());
         //获取根节点
         String rootId = list.stream()
-                .filter(file -> file.getId().equals(id))
+                .filter(file -> file.getId().equals(clouddiscFileDTO.getId()))
                 .collect(Collectors.toList())
                 .get(0)
                 .getParentId();
         //构建树
         List<CloudDiscFileTree> cloudDiscFileTreeList = getBuildTree(list, rootId);
         //重置树的各节点的id以及parentID
-        List<CloudDiscFileTree> sourceTreelists = setIdParentIDAndfindChildren(cloudDiscFileTreeList, parentId);
+        List<CloudDiscFileTree> sourceTreelists = setIdParentIDAndfindChildren(cloudDiscFileTreeList, clouddiscFileDTO.getParentId());
         List<ClouddiscFile> clouddiscFileList = new ArrayList<>();
         //树转列表
         List<ClouddiscFile> lists = treeToList(sourceTreelists, clouddiscFileList);
@@ -228,11 +239,7 @@ public class ClouddiscFileServiceImpl implements IClouddiscFileService {
     private List<ClouddiscFile> treeToList(List<CloudDiscFileTree> sourceTreelists, List<ClouddiscFile> targetClouddiscFileList) {
         for (CloudDiscFileTree treelist :
                 sourceTreelists) {
-            ClouddiscFile clouddiscFile = new ClouddiscFile();
-            clouddiscFile.setUserId(SecurityUtils.getUserId());
-            clouddiscFile.setCreateTime(DateUtils.getNowDate());
-            clouddiscFile.setCreateBy(SecurityUtils.getUsername());
-            clouddiscFile.setUploadTime(DateUtils.getNowDate());
+            ClouddiscFile clouddiscFile = getClouddiscFile();
             //复制对象
             BeanUtils.copyProperties(treelist, clouddiscFile, ClouddiscFile.class);
             targetClouddiscFileList.add(clouddiscFile);
@@ -241,6 +248,16 @@ public class ClouddiscFileServiceImpl implements IClouddiscFileService {
             }
         }
         return targetClouddiscFileList;
+    }
+
+    private ClouddiscFile getClouddiscFile() {
+        ClouddiscFile clouddiscFile = new ClouddiscFile();
+        clouddiscFile.setUserId(SecurityUtils.getUserId());
+        clouddiscFile.setCreateTime(DateUtils.getNowDate());
+        clouddiscFile.setCreateBy(SecurityUtils.getUsername());
+        clouddiscFile.setUploadTime(DateUtils.getNowDate());
+        clouddiscFile.setDelFlag(ClouddiscFileConstants.NOT_DEL_FLAG);
+        return clouddiscFile;
     }
 
     /**

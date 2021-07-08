@@ -3,6 +3,7 @@ package com.ruoyi.system.service;
 import java.io.IOException;
 import java.util.List;
 import com.ruoyi.system.domain.ClouddiscFile;
+import com.ruoyi.system.domain.DTO.ClouddiscFileDTO;
 import com.ruoyi.system.domain.vo.CommonTreeVO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.web.multipart.MultipartFile;
@@ -89,5 +90,5 @@ public interface IClouddiscFileService
      * @date 2021/6/21 0021 16:01
      * @return boolean
      */
-    boolean fileCollect(String parentId, String ids);
+    boolean fileCollect(ClouddiscFileDTO clouddiscFileDTO);
 }

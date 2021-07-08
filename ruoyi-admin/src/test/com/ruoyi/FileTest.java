@@ -22,8 +22,7 @@ public class FileTest {
 
     @Test
     public void fileCollect(){
-        clouddiscFileService.fileCollect("a6d2388dc487421ebbf04f196b3e2bc9","73fc9814b4d84e3fbb09a2e0cd5354ef");
-        System.out.println("------");
-
+//        clouddiscFileService.fileCollect("a6d2388dc487421ebbf04f196b3e2bc9","73fc9814b4d84e3fbb09a2e0cd5354ef");
+//        System.out.println("------");
     }
 }

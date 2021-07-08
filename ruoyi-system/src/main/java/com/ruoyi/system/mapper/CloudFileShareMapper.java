@@ -1,7 +1,7 @@
 package com.ruoyi.system.mapper;
 
 import java.util.List;
-import com.ruoyi.system.domain.FileShare;
+import com.ruoyi.system.domain.CloudFileShare;
 
 /**
  * 【请填写功能名称】Mapper接口
@@ -9,7 +9,7 @@ import com.ruoyi.system.domain.FileShare;
  * @author ruoyi
  * @date 2021-05-19
  */
-public interface FileShareMapper 
+public interface CloudFileShareMapper
 {
     /**
      * 查询【请填写功能名称】
@@ -17,31 +17,31 @@ public interface FileShareMapper
      * @param fileShareId 【请填写功能名称】ID
      * @return 【请填写功能名称】
      */
-    public FileShare selectFileShareById(String fileShareId);
+    public CloudFileShare selectFileShareById(String fileShareId);
 
     /**
      * 查询【请填写功能名称】列表
      * 
-     * @param fileShare 【请填写功能名称】
+     * @param cloudFileShare 【请填写功能名称】
      * @return 【请填写功能名称】集合
      */
-    public List<FileShare> selectFileShareList(FileShare fileShare);
+    public List<CloudFileShare> selectFileShareList(CloudFileShare cloudFileShare);
 
     /**
      * 新增【请填写功能名称】
      * 
-     * @param fileShare 【请填写功能名称】
+     * @param cloudFileShare 【请填写功能名称】
      * @return 结果
      */
-    public int insertFileShare(FileShare fileShare);
+    public int insertFileShare(CloudFileShare cloudFileShare);
 
     /**
      * 修改【请填写功能名称】
      * 
-     * @param fileShare 【请填写功能名称】
+     * @param cloudFileShare 【请填写功能名称】
      * @return 结果
      */
-    public int updateFileShare(FileShare fileShare);
+    public int updateFileShare(CloudFileShare cloudFileShare);
 
     /**
      * 删除【请填写功能名称】

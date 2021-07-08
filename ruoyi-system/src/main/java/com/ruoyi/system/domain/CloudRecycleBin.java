@@ -22,6 +22,16 @@ public class CloudRecycleBin extends BaseEntity
     @Excel(name = "文件id")
     private String fileName;
 
+    private String userId;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     /** 删除标记 */
     private String delFlag;
 
@@ -55,14 +65,11 @@ public class CloudRecycleBin extends BaseEntity
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("fileName", getFileName())
-            .append("delFlag", getDelFlag())
-            .append("createTime", getCreateTime())
-            .append("createBy", getCreateBy())
-            .append("updateTime", getUpdateTime())
-            .append("updateBy", getUpdateBy())
-            .toString();
+        return "CloudRecycleBin{" +
+                "id='" + id + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", userId='" + userId + '\'' +
+                ", delFlag='" + delFlag + '\'' +
+                '}';
     }
 }

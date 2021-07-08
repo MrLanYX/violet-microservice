@@ -18,4 +18,15 @@ public class ClouddiscFileConstants {
      *
      */
     public static final String Document = "1";
+    /**
+     * @Description:
+     * 删除标志 0 否
+     */
+    public static final String NOT_DEL_FLAG = "0";
+
+    /**
+     * @Description:
+     * 删除标志 1 是
+     */
+    public static final String IS_DEL_FLAG = "1";
 }

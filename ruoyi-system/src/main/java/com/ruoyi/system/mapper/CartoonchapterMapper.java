@@ -9,7 +9,7 @@ import com.ruoyi.system.domain.CloudCartoon;
  * @author ruoyi
  * @date 2021-06-05
  */
-public interface CloudCartoonMapper 
+public interface CartoonchapterMapper
 {
     /**
      * 查询【请填写功能名称】

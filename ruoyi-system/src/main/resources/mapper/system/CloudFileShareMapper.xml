@@ -2,19 +2,19 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.system.mapper.FileShareMapper">
+<mapper namespace="com.ruoyi.system.mapper.CloudFileShareMapper">
     
-    <resultMap type="FileShare" id="FileShareResult">
+    <resultMap type="CloudFileShare" id="FileShareResult">
         <result property="fileShareId"    column="file_share_id"    />
         <result property="fileId"    column="file_id"    />
         <result property="shareId"    column="share_id"    />
     </resultMap>
 
     <sql id="selectFileShareVo">
-        select file_share_id, file_id, share_id from file_share
+        select file_share_id, file_id, share_id from cloud_file_share
     </sql>
 
-    <select id="selectFileShareList" parameterType="FileShare" resultMap="FileShareResult">
+    <select id="selectFileShareList" parameterType="CloudFileShare" resultMap="FileShareResult">
         <include refid="selectFileShareVo"/>
         <where>  
             <if test="fileId != null  and fileId != ''"> and file_id = #{fileId}</if>
@@ -27,8 +27,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where file_share_id = #{fileShareId}
     </select>
         
-    <insert id="insertFileShare" parameterType="FileShare">
-        insert into file_share
+    <insert id="insertFileShare" parameterType="CloudFileShare">
+        insert into cloud_file_share
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="fileShareId != null">file_share_id,</if>
             <if test="fileId != null">file_id,</if>
@@ -41,8 +41,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <update id="updateFileShare" parameterType="FileShare">
-        update file_share
+    <update id="updateFileShare" parameterType="CloudFileShare">
+        update cloud_file_share
         <trim prefix="SET" suffixOverrides=",">
             <if test="fileId != null">file_id = #{fileId},</if>
             <if test="shareId != null">share_id = #{shareId},</if>
@@ -51,11 +51,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteFileShareById" parameterType="String">
-        delete from file_share where file_share_id = #{fileShareId}
+        delete from cloud_file_share where file_share_id = #{fileShareId}
     </delete>
 
     <delete id="deleteFileShareByIds" parameterType="String">
-        delete from file_share where share_id in
+        delete from cloud_file_share where share_id in
         <foreach item="fileShareId" collection="array" open="(" separator="," close=")">
             #{fileShareId}
         </foreach>

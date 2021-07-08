@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.system.mapper.CloudCartoonMapper">
+<mapper namespace="com.ruoyi.system.mapper.CartoonchapterMapper">
     
     <resultMap type="CloudCartoon" id="CloudCartoonResult">
         <result property="cartoonId"    column="cartoon_id"    />
@@ -16,7 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectCloudCartoonVo">
-        select cartoon_id, parent_id, cartoon_name, cartoon_type, create_time, create_by, update_time, update_by from cloud_cartoon
+        select cartoon_id, parent_id, cartoon_name, cartoon_type, create_time, create_by, update_time, update_by from cartoon_chapter
     </sql>
 
     <select id="selectCloudCartoonList" parameterType="CloudCartoon" resultMap="CloudCartoonResult">
@@ -34,7 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertCloudCartoon" parameterType="CloudCartoon">
-        insert into cloud_cartoon
+        insert into cartoon_chapter
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="cartoonId != null">cartoon_id,</if>
             <if test="parentId != null">parent_id,</if>
@@ -58,7 +58,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <update id="updateCloudCartoon" parameterType="CloudCartoon">
-        update cloud_cartoon
+        update cartoon_chapter
         <trim prefix="SET" suffixOverrides=",">
             <if test="parentId != null">parent_id = #{parentId},</if>
             <if test="cartoonName != null">cartoon_name = #{cartoonName},</if>
@@ -72,11 +72,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteCloudCartoonById" parameterType="String">
-        delete from cloud_cartoon where cartoon_id = #{cartoonId}
+        delete from cartoon_chapter where cartoon_id = #{cartoonId}
     </delete>
 
     <delete id="deleteCloudCartoonByIds" parameterType="String">
-        delete from cloud_cartoon where cartoon_id in 
+        delete from cartoon_chapter where cartoon_id in
         <foreach item="cartoonId" collection="array" open="(" separator="," close=")">
             #{cartoonId}
         </foreach>

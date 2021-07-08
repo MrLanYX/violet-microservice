@@ -9,6 +9,7 @@ import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUtils;
+import com.ruoyi.system.domain.DTO.ClouddiscFileDTO;
 import com.ruoyi.system.domain.vo.CommonTreeVO;
 import com.ruoyi.web.controller.common.CommonController;
 import io.swagger.annotations.ApiOperation;
@@ -160,8 +161,7 @@ public class ClouddiscFileController extends BaseController
 
     /**
      * @Description: 文件收藏
-     * @param parentId
-     * @param id
+     * @param clouddiscFileDTO
      * @author Administrator
      * @date 2021/6/29 0029 9:59
      * @return com.ruoyi.common.core.domain.AjaxResult
@@ -169,9 +169,9 @@ public class ClouddiscFileController extends BaseController
     @Log(title = "文件收藏", businessType = BusinessType.INSERT)
     @PostMapping("/fileCollect")
     @ApiOperation("文件收藏")
-    public AjaxResult fileCollect(String parentId ,String id){
+    public AjaxResult fileCollect(@RequestBody ClouddiscFileDTO clouddiscFileDTO){
 
-        return AjaxResult.success(clouddiscFileService.fileCollect(parentId, id));
+        return AjaxResult.success(clouddiscFileService.fileCollect(clouddiscFileDTO));
     }
 
     /**

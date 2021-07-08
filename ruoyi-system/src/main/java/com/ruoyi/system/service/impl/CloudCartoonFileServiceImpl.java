@@ -3,7 +3,7 @@ package com.ruoyi.system.service.impl;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.system.mapper.CloudCartoonFileMapper;
+import com.ruoyi.system.mapper.CartoonFileMapper;
 import com.ruoyi.system.domain.CloudCartoonFile;
 import com.ruoyi.system.service.ICloudCartoonFileService;
 
@@ -17,7 +17,7 @@ import com.ruoyi.system.service.ICloudCartoonFileService;
 public class CloudCartoonFileServiceImpl implements ICloudCartoonFileService 
 {
     @Autowired
-    private CloudCartoonFileMapper cloudCartoonFileMapper;
+    private CartoonFileMapper cartoonFileMapper;
 
     /**
      * 查询【请填写功能名称】
@@ -28,7 +28,7 @@ public class CloudCartoonFileServiceImpl implements ICloudCartoonFileService
     @Override
     public CloudCartoonFile selectCloudCartoonFileById(Long cartoonFileId)
     {
-        return cloudCartoonFileMapper.selectCloudCartoonFileById(cartoonFileId);
+        return cartoonFileMapper.selectCloudCartoonFileById(cartoonFileId);
     }
 
     /**
@@ -40,7 +40,7 @@ public class CloudCartoonFileServiceImpl implements ICloudCartoonFileService
     @Override
     public List<CloudCartoonFile> selectCloudCartoonFileList(CloudCartoonFile cloudCartoonFile)
     {
-        return cloudCartoonFileMapper.selectCloudCartoonFileList(cloudCartoonFile);
+        return cartoonFileMapper.selectCloudCartoonFileList(cloudCartoonFile);
     }
 
     /**
@@ -52,7 +52,7 @@ public class CloudCartoonFileServiceImpl implements ICloudCartoonFileService
     @Override
     public int insertCloudCartoonFile(CloudCartoonFile cloudCartoonFile)
     {
-        return cloudCartoonFileMapper.insertCloudCartoonFile(cloudCartoonFile);
+        return cartoonFileMapper.insertCloudCartoonFile(cloudCartoonFile);
     }
 
     /**
@@ -64,7 +64,7 @@ public class CloudCartoonFileServiceImpl implements ICloudCartoonFileService
     @Override
     public int updateCloudCartoonFile(CloudCartoonFile cloudCartoonFile)
     {
-        return cloudCartoonFileMapper.updateCloudCartoonFile(cloudCartoonFile);
+        return cartoonFileMapper.updateCloudCartoonFile(cloudCartoonFile);
     }
 
     /**
@@ -76,7 +76,7 @@ public class CloudCartoonFileServiceImpl implements ICloudCartoonFileService
     @Override
     public int deleteCloudCartoonFileByIds(Long[] cartoonFileIds)
     {
-        return cloudCartoonFileMapper.deleteCloudCartoonFileByIds(cartoonFileIds);
+        return cartoonFileMapper.deleteCloudCartoonFileByIds(cartoonFileIds);
     }
 
     /**
@@ -88,6 +88,6 @@ public class CloudCartoonFileServiceImpl implements ICloudCartoonFileService
     @Override
     public int deleteCloudCartoonFileById(Long cartoonFileId)
     {
-        return cloudCartoonFileMapper.deleteCloudCartoonFileById(cartoonFileId);
+        return cartoonFileMapper.deleteCloudCartoonFileById(cartoonFileId);
     }
 }

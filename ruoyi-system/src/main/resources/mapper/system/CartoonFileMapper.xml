@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.system.mapper.CloudCartoonFileMapper">
+<mapper namespace="com.ruoyi.system.mapper.CartoonFileMapper">
     
     <resultMap type="CloudCartoonFile" id="CloudCartoonFileResult">
         <result property="cartoonFileId"    column="cartoon_file_id"    />
@@ -11,7 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectCloudCartoonFileVo">
-        select cartoon_file_id, cartoon_id, file_id from cloud_cartoon_file
+        select cartoon_file_id, cartoon_id, file_id from CartoonFileMapper
     </sql>
 
     <select id="selectCloudCartoonFileList" parameterType="CloudCartoonFile" resultMap="CloudCartoonFileResult">
@@ -28,7 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertCloudCartoonFile" parameterType="CloudCartoonFile" useGeneratedKeys="true" keyProperty="cartoonFileId">
-        insert into cloud_cartoon_file
+        insert into CartoonFileMapper
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="cartoonId != null">cartoon_id,</if>
             <if test="fileId != null">file_id,</if>
@@ -40,7 +40,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <update id="updateCloudCartoonFile" parameterType="CloudCartoonFile">
-        update cloud_cartoon_file
+        update CartoonFileMapper
         <trim prefix="SET" suffixOverrides=",">
             <if test="cartoonId != null">cartoon_id = #{cartoonId},</if>
             <if test="fileId != null">file_id = #{fileId},</if>
@@ -49,11 +49,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteCloudCartoonFileById" parameterType="Long">
-        delete from cloud_cartoon_file where cartoon_file_id = #{cartoonFileId}
+        delete from CartoonFileMapper where cartoon_file_id = #{cartoonFileId}
     </delete>
 
     <delete id="deleteCloudCartoonFileByIds" parameterType="String">
-        delete from cloud_cartoon_file where cartoon_file_id in 
+        delete from cartoon_file where cartoon_file_id in
         <foreach item="cartoonFileId" collection="array" open="(" separator="," close=")">
             #{cartoonFileId}
         </foreach>

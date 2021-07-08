@@ -7,6 +7,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="CloudRecycleBin" id="CloudRecycleBinResult">
         <result property="id"    column="id"    />
         <result property="fileName"    column="file_name"    />
+        <result property="userId"    column="user_id"    />
+
         <result property="delFlag"    column="del_flag"    />
         <result property="createTime"    column="create_time"    />
         <result property="createBy"    column="create_by"    />
@@ -15,7 +17,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectCloudRecycleBinVo">
-        select id, file_name, del_flag, create_time, create_by, update_time, update_by from cloud_recycle_bin
+        select id, file_name, del_flag, create_time, create_by, update_time, update_by, user_id from cloud_recycle_bin
     </sql>
 
     <select id="selectCloudRecycleBinList" parameterType="CloudRecycleBin" resultMap="CloudRecycleBinResult">
@@ -35,6 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into cloud_recycle_bin
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
             <if test="fileName != null">file_name,</if>
             <if test="delFlag != null">del_flag,</if>
             <if test="createTime != null">create_time,</if>
@@ -44,6 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
             <if test="fileName != null">#{fileName},</if>
             <if test="delFlag != null">#{delFlag},</if>
             <if test="createTime != null">#{createTime},</if>
@@ -56,24 +60,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertCloudRecycleBins" parameterType="CloudRecycleBin">
         insert into cloud_recycle_bin
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">id,</if>
-            <if test="fileName != null">file_name,</if>
-            <if test="delFlag != null">del_flag,</if>
-            <if test="createTime != null">create_time,</if>
-            <if test="createBy != null">create_by,</if>
-            <if test="updateTime != null">update_time,</if>
-            <if test="updateBy != null">update_by,</if>
+            id,
+            user_id,
+            file_name,
+            del_flag,
+            create_time,
+            create_by,
+            update_time,
+            update_by,
         </trim>
         values
         <foreach collection ="list" item="cloudRecycleBinList"  separator =",">
             <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">#{cloudRecycleBinList.id},</if>
-            <if test="fileName != null">#{cloudRecycleBinList.fileName},</if>
-            <if test="delFlag != null">#{cloudRecycleBinList.delFlag},</if>
-            <if test="createTime != null">#{cloudRecycleBinList.createTime},</if>
-            <if test="createBy != null">#{cloudRecycleBinList.createBy},</if>
-            <if test="updateTime != null">#{cloudRecycleBinList.updateTime},</if>
-            <if test="updateBy != null">#{cloudRecycleBinList.updateBy},</if>
+            #{cloudRecycleBinList.id},
+            #{cloudRecycleBinList.fileName},
+            #{cloudRecycleBinList.delFlag},
+            #{cloudRecycleBinList.createTime},
+            #{cloudRecycleBinList.createBy},
+            #{cloudRecycleBinList.updateTime},
+            #{cloudRecycleBinList.updateBy},
             </trim>
         </foreach>
     </insert>

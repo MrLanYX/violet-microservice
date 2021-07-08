@@ -1,7 +1,7 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
-import com.ruoyi.system.domain.FileShare;
+import com.ruoyi.system.domain.CloudFileShare;
 
 /**
  * 【请填写功能名称】Service接口
@@ -17,31 +17,31 @@ public interface IFileShareService
      * @param fileShareId 【请填写功能名称】ID
      * @return 【请填写功能名称】
      */
-    public FileShare selectFileShareById(String fileShareId);
+    public CloudFileShare selectFileShareById(String fileShareId);
 
     /**
      * 查询【请填写功能名称】列表
      * 
-     * @param fileShare 【请填写功能名称】
+     * @param cloudFileShare 【请填写功能名称】
      * @return 【请填写功能名称】集合
      */
-    public List<FileShare> selectFileShareList(FileShare fileShare);
+    public List<CloudFileShare> selectFileShareList(CloudFileShare cloudFileShare);
 
     /**
      * 新增【请填写功能名称】
      * 
-     * @param fileShare 【请填写功能名称】
+     * @param cloudFileShare 【请填写功能名称】
      * @return 结果
      */
-    public int insertFileShare(FileShare fileShare);
+    public int insertFileShare(CloudFileShare cloudFileShare);
 
     /**
      * 修改【请填写功能名称】
      * 
-     * @param fileShare 【请填写功能名称】
+     * @param cloudFileShare 【请填写功能名称】
      * @return 结果
      */
-    public int updateFileShare(FileShare fileShare);
+    public int updateFileShare(CloudFileShare cloudFileShare);
 
     /**
      * 批量删除【请填写功能名称】

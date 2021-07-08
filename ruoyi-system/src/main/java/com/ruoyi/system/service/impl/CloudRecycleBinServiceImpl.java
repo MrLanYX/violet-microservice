@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import cn.hutool.core.lang.Assert;
 import com.ruoyi.common.utils.CommonUtil;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.system.domain.CloudFileRecycle;
 import com.ruoyi.system.domain.ClouddiscFile;
 import com.ruoyi.system.mapper.CloudFileRecycleMapper;
@@ -56,7 +58,10 @@ public class CloudRecycleBinServiceImpl implements ICloudRecycleBinService
     @Override
     public List<CloudRecycleBin> selectCloudRecycleBinList(CloudRecycleBin cloudRecycleBin)
     {
-        return cloudRecycleBinMapper.selectCloudRecycleBinList(cloudRecycleBin);
+        return cloudRecycleBinMapper.selectCloudRecycleBinList(cloudRecycleBin)
+                .stream()
+                .filter(recycleBin-> SecurityUtils.getUserId().equals(recycleBin.getUserId()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -69,6 +74,7 @@ public class CloudRecycleBinServiceImpl implements ICloudRecycleBinService
     public int insertCloudRecycleBin(CloudRecycleBin cloudRecycleBin)
     {
         cloudRecycleBin.setCreateTime(DateUtils.getNowDate());
+        cloudRecycleBin.setUserId(SecurityUtils.getUserId());
         return cloudRecycleBinMapper.insertCloudRecycleBin(cloudRecycleBin);
     }
 
