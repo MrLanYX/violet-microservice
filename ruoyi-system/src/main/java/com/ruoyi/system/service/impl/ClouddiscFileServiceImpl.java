@@ -169,6 +169,7 @@ public class ClouddiscFileServiceImpl implements IClouddiscFileService {
         cloudRecycleBin.setFileName(clouddiscFile.getSourceName());
         cloudRecycleBin.setCreateTime(DateUtils.getNowDate());
         cloudRecycleBin.setCreateBy(SecurityUtils.getUserId());
+        cloudRecycleBin.setUserId(SecurityUtils.getUserId());
         //删除文件
         clouddiscFileMapper.deleteClouddiscFileByIds(ids);
         //插入回收站
